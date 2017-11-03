@@ -6,6 +6,16 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
+    init_server_tcp();
+}
+
+Widget::~Widget()
+{
+    delete ui;
+}
+
+void Widget::init_server_tcp()
+{
     tcpServer = new QTcpServer(this);
     if(!tcpServer->listen(QHostAddress::LocalHost,6666))
     { //本地主机的6666端口，如果出错就输出错误信息，并关闭
@@ -15,11 +25,6 @@ Widget::Widget(QWidget *parent) :
     connect(tcpServer,SIGNAL(newConnection()),this,SLOT(sendMessage()));
 }
 
-Widget::~Widget()
-{
-    delete ui;
-}
-
 void Widget::sendMessage()
 {
     //用于暂存我们要发送的数据
@@ -27,7 +32,7 @@ void Widget::sendMessage()
     //使用数据流写入数据
     QDataStream out(&block,QIODevice::WriteOnly);
     //设置数据流的版本，客户端和服务器端使用的版本要相同
-    out.setVersion(QDataStream::Qt_4_6);
+    out.setVersion(QDataStream::Qt_5_9);
     out<<(quint16) 0;
     out<<tr("hello Tcp!!!");
     out.device()->seek(0);

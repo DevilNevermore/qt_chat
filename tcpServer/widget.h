@@ -19,6 +19,7 @@ public:
 private:
     Ui::Widget *ui;
     QTcpServer *tcpServer;
+    void init_server_tcp();
 
 private slots:
 void sendMessage();

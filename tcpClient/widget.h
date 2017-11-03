@@ -21,6 +21,7 @@ private:
     QTcpSocket *tcpSocket;
     QString message; //存放从服务器接收到的字符串
     quint16 blockSize; //存放文件的大小信息
+    void init_client_tcp();
 
 private slots:
 void newConnect(); //连接服务器

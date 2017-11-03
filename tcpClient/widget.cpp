@@ -6,10 +6,7 @@ Widget::Widget(QWidget *parent) :
     ui(new Ui::Widget)
 {
     ui->setupUi(this);
-    tcpSocket = new QTcpSocket(this);
-    connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(readMessage()));
-    connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),
-    this,SLOT(displayError(QAbstractSocket::SocketError)));
+    init_client_tcp();
 }
 
 Widget::~Widget()
@@ -17,19 +14,25 @@ Widget::~Widget()
     delete ui;
 }
 
+void Widget::init_client_tcp()
+{
+    tcpSocket = new QTcpSocket(this);
+    connect(tcpSocket,SIGNAL(readyRead()),this,SLOT(readMessage()));
+    connect(tcpSocket,SIGNAL(error(QAbstractSocket::SocketError)),this,SLOT(displayError(QAbstractSocket::SocketError)));
+}
+
 void Widget::newConnect()
 {
     blockSize = 0; //初始化其为0
-tcpSocket->abort(); //取消已有的连接
-//连接到主机，这里从界面获取主机地址和端口号
-    tcpSocket->connectToHost(ui->hostLineEdit->text(),
-                             ui->portLineEdit->text().toInt());
+    tcpSocket->abort(); //取消已有的连接
+    //连接到主机，这里从界面获取主机地址和端口号
+    tcpSocket->connectToHost(ui->hostLineEdit->text(),ui->portLineEdit->text().toInt());
 }
 
 void Widget::readMessage()
 {
     QDataStream in(tcpSocket);
-    in.setVersion(QDataStream::Qt_4_6);
+    in.setVersion(QDataStream::Qt_5_9);
     //设置数据流版本，这里要和服务器端相同
     if(blockSize==0) //如果是刚开始接收数据
     {
